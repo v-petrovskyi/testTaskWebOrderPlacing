@@ -1,4 +1,4 @@
-package com.example.demowebsocket;
+package com.example.demowebsocket.controller;
 
 //import com.example.demowebsocket.entity.Order;
 //import org.springframework.messaging.handler.annotation.MessageMapping;
