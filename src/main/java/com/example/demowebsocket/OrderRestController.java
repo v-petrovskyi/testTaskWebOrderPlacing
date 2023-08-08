@@ -1,18 +1,21 @@
 package com.example.demowebsocket;
 
-import org.springframework.stereotype.Controller;
+import com.example.demowebsocket.entity.Order;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/orders")
+@RestController
+@RequestMapping("/api/orders")
 public class OrderRestController {
 
     private final OrderRepository orderRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public OrderRestController(OrderRepository orderRepository) {
+    public OrderRestController(OrderRepository orderRepository, SimpMessagingTemplate messagingTemplate) {
         this.orderRepository = orderRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping
@@ -23,6 +26,8 @@ public class OrderRestController {
     @PostMapping
     public Order placeOrder(@RequestBody Order order) {
         order.setProcessed(false);
-        return orderRepository.save(order);
+        Order save = orderRepository.save(order);
+        messagingTemplate.convertAndSend("/topic/orders", save);
+        return save;
     }
 }
