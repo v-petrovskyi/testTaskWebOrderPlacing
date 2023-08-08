@@ -1,0 +1,29 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time Orders</title>
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+  <script>
+    const stompClient = Stomp.over(new SockJS('/ws'));
+    stompClient.connect({}, function (frame) {
+      stompClient.subscribe('/topic/orders', function (response) {
+        const order = JSON.parse(response.body);
+        // Відображення замовлення на сторінці
+        const ordersList = document.getElementById("orders-list");
+        const orderItem = document.createElement("li");
+        orderItem.textContent = "Order #" + order.id + " - " + order.customerName;
+        ordersList.appendChild(orderItem);
+      });
+    });
+  </script>
+</head>
+<body>
+<h1>Real-time Orders</h1>
+<ul id="orders-list"></ul>
+</body>
+</html>
